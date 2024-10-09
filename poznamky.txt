@@ -55,3 +55,63 @@
     
     8.2
     - vytvoriť súbor urls.py v skuska (priečinok aplikácie)
+    - upraviť urls.py:
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+
+9. Template
+9.1 Vytvoriť v aplikácii priečinok templates/nazov_aplikacie a v ňom nejaký html súbor(napr. index.html)
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulačka</title>
+</head>
+<body>
+    <h1>Kalkulačka</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="a">
+        <select name="operator">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <input type="text" name="b">
+        <input type="submit">
+    </form>
+    <h2>{{vysledok}}</h2>
+    
+</body>
+</html>
+
+9.2 upraviť views:
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def index(request):
+    if request.method == "GET":
+        vysledok = 0
+    if request.method == "POST":
+        a = int(request.POST["a"])
+        b = int(request.POST["b"])
+        operator = request.POST["operator"]
+        if operator == "+":
+            vysledok = a + b
+        elif operator == "-":
+            vysledok = a - b
+        elif operator == "*":
+            vysledok = a * b
+        else:
+            vysledok = a / b
+
+    return render(request, 'skuska/index.html', dict(vysledok=vysledok))
+
+# Create your views here.
+
